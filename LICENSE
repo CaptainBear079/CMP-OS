@@ -1,0 +1,38 @@
+# Chaos Project License (CPL)
+Copyright (c) 2025 Captain Bear (CaptainBear079 on GitHub)
+
+## DEFINITIONS
+Commercial Use:
+- Something counts as commercial use if you make money by presenting or redistributing this software in exchange for money.
+
+repo/s:
+- "repo" is the short form for repository, "repos" is the plural version
+
+This license ONLY applies to repositories listed in the official "Chaos Code Project" (view https://github.com/CaptainBear079/CMP-OS/tree/main/ChaosCode.md) repo list.
+
+1. Source availability and attribution
+- When you distribute this software (original or modified), you must give credits for
+	the original source code and it's author(s).
+- You must add a clear NOTICE.txt file describing any changes made to the original source code.
+	Write what files have been modified and what changes were done to the logic.
+
+2. Redistribution and use
+- You may copy, distribute and modify the software for non-commercial purposes without
+	prior permission by the project lead (CaptainBear079),
+	under the condition that you comply with Section 1 (source availability and attribution).
+- Commercial use is alowed under following conditions:
+	- You don't use the "Chaos Code Project" name for marketing (excludes official collaborations)
+	- Your project/repo/product/content complies with our safety section (3.Safety)
+	- Your project/repo/product/content refers to the original repo and this license
+	- You must not imply endorsement by the original authors when distributing modified versions.
+
+3. Safety
+- You may not use this software to physically harm a person, invade their privacy or damage property.
+
+4. Disclaimer of warranty and liability
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OR LIABILITY OF ANY KIND.
+BY USING THIS SOFTWARE YOU AGREE THAT THE AUTHORS ARE NOT LIABLE FOR ANY DAMAGE DONE WITH THIS SOFTWARE.
+
+5. License file
+- This `LICENSE` file must be included with all copies or substantial portions of the
+	software. Do not remove or alter this license file when redistributing the project.
