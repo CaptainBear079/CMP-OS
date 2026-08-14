@@ -6,14 +6,14 @@ GCC_VERSION = 15.2.0
 GCC_URL = https://ftp.gnu.org/gnu/gcc/gcc-$(GCC_VERSION)/gcc-$(GCC_VERSION).tar.xz
 GCC_BUILD = $(abspath ./../../../toolchain/gcc-build-$(GCC_VERSION))
 
-TOOLCHAIN_PREFIX = $(abspath ./../../../toolchain/$(TOOLCHAIN))
+TOOLCHAIN_PREFIX = $(abspath ./../../../toolchain/$(TOOLCHAIN_TARGET))
 TOOLCHAIN_TARGET = i686-elf
 
 build-toolchain: build-binutils build-gcc
 
-build-binutils: ../toolchain/bin/$(TOOLCHAIN)-ld
+build-binutils: ../toolchain/bin/$(TOOLCHAIN_TARGET)-ld
 
-../toolchain/bin/$(TOOLCHAIN)-ld: get-binutils
+../toolchain/bin/$(TOOLCHAIN_TARGET)-ld: get-binutils
 	mkdir -p $(BINUTILS_BUILD)
 	cd $(BINUTILS_BUILD) && CFLAGS= ASMFLAGS= CC= CXX= ASM= LINKER= LINKER_FLAGS= ../binutils-$(BINUTILS_VERSION)/configure \
 		--prefix=$(TOOLCHAIN_PREFIX) \
@@ -28,9 +28,9 @@ get-binutils:
 	mkdir -p ./../../../toolchain
 	cd ./../../../toolchain && wget $(BINUTILS_URL) && tar -xvf binutils-$(BINUTILS_VERSION).tar.xz
 
-build-gcc: ../toolchain/bin/$(TOOLCHAIN)-gcc
+build-gcc: ../toolchain/bin/$(TOOLCHAIN_TARGET)-gcc
 
-../toolchain/bin/$(TOOLCHAIN)-gcc: build-binutils get-gcc
+../toolchain/bin/$(TOOLCHAIN_TARGET)-gcc: build-binutils get-gcc
 	mkdir -p $(GCC_BUILD)
 	cd $(GCC_BUILD) && CFLAGS= ASMFLAGS= CC= CXX= ASM= LINKER= LINKER_FLAGS= ../gcc-$(GCC_VERSION)/configure \
 		--prefix=$(TOOLCHAIN_PREFIX) \
