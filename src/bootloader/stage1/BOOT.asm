@@ -21,48 +21,19 @@ sti
 ; save boot drive from dl
 mov [boot_drive], dl
 
-; DAP setup
-mov byte [dap+0], 0x10
-mov byte [dap+1], 0x00
-mov word [dap+2], 0x00016
-mov word [dap+4], 0x7E00
-mov word [dap+6], 0x0000
-
-mov si, PARTITION_TABLE
-mov cx, 4
-
-find_aktiv_part_entry:
-cmp byte[si], 0x80
-je save_aktiv_part_entry
-add si, 16
-loop find_aktiv_part_entry
-mov ah, 0x1
-jmp ERROR
-
-save_aktiv_part_entry:
-; Read LBA
-mov [aktiv_part_entry], si
-mov ax, [si+8]
-mov dx, [si+10]
-mov word [dap+8], ax
-mov word [dap+10], dx
-xor ax, ax
-xor dx, dx
-mov word [dap+12], ax
-mov word [dap+14], dx
+mov si, [dap]
 
 ; Read the sector with Stage 2
-; Check for EDD support
+; - Check for EDD support
 clc
 mov ah, 0x41
 mov bx, 0x55AA
-mov dl, [boot_drive]
 int 0x13
 jc no_edd
 cmp bx, 0xAA55
 jne no_edd
 
-; Read Sector
+; - Read Sector
 mov ah, 0x42
 mov dl, [boot_drive]
 mov si, dap
@@ -83,65 +54,50 @@ jmp ERROR
 
 print_string:
 mov ah, 0x0E
-jmp .next_char
-
-.next_char:
-lodsb
-cmp al, 0
-je .done
-int 0x10
-jmp .next_char
-.done:
-mov ah, 0
-ret
+jmp next_char
 
 ERROR:
-cmp ah, 1
-je .ERROR__1
 cmp ah, 2
-je .ERROR__2
+je ERROR__2
 cmp ah, 3
-je .ERROR__3
+je ERROR__3
 
-.ERROR__1:
-mov si, ERROR_1
-call print_string
-jmp InfinteLoop
-
-.ERROR__2:
+ERROR__2:
 mov si, ERROR_2
 call print_string
-jmp InfinteLoop
+jmp done
 
-.ERROR__3:
+ERROR__3:
 mov si, ERROR_3
 call print_string
-jmp InfinteLoop
+jmp done
 
-InfinteLoop:
-jmp $
+next_char:
+lodsb
+cmp al, 0
+je done
+int 0x10
+jmp next_char
+done:
+mov ah, 0
+
+hlt
 
 ; Boot text
-ERROR_1: db 'No bootable partition entries. Please restart the PC. ERROR CODE 0x000001', ENDL, 0
 ERROR_2: db 'LBA Reading error. Please restart the PC. ERROR CODE 0x000002', ENDL, 0
 ERROR_3: db 'No EDD support. Please restart the PC. ERROR CODE 0x000003', ENDL, 0
 
 ; Boot data space
 boot_drive: db 0
-aktiv_part_entry: dw 0
+
 ; DAP
-dap: times 16 db 0
-
-times 446-($-$$) db 0 ; Fill to offsets
-
-PARTITION_TABLE:
-; Offset to 0x7C00: 0x1BE
-db 0x80                   ; Bootflag (0x80 = aktiv)
-db 0x01, 0x01, 0x00       ; Start CHS (Dummywerte)
-db 0x0B                   ; Partitions-Typ (Fat32)
-db 0xFE, 0xFF, 0xFF       ; End CHS (Dummywerte)
-dd 512                    ; Start LBA
-dd 8                      ; Anzahl Sektoren
+dap:
+db 0x10   ; DAP size (always 0x10)
+db 0x00   ; Reserved (always 0x00)
+dw 0x000F ; Number of sectors to read
+dw 0x7E00 ; Buffer address (segment)
+dw 0x0000 ; Buffer address (offset)
+dq 1      ; Starting LBA (bootmanager)
 
 times 510-($-$$) db 0 ; Fill remaining partition table entries
 ; Boot signature
