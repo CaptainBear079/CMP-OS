@@ -45,6 +45,7 @@ int __attribute__((_cdecl)) _cstart(uint32_t boot_drive) {
 
 	clear_screen(); // Clear the screen
 	set_pos(__SYS_SCREEN_X, __SYS_SCREEN_Y); // Set writing position
+	printf("Init Disk Services...\n");
 
 	// Init Disk Services (FAT32, ChaosFormat, ...) - WIP
 	BIOS_DiskInfo biosDisk;
@@ -56,9 +57,10 @@ int __attribute__((_cdecl)) _cstart(uint32_t boot_drive) {
 	Disk_.DriveName[0] = '/';
 	Disk_.DriveName[1] = '\0';
 	Disk_.PartitionNumber = 0;
-	void* __KERNEL_LOAD_ADDRESS = (void*)0x00000500;
+	void* __KERNEL_LOAD_ADDRESS = (void*)0x00100000;
 	for(int i = 0; i < 10; i++) {
-		__KERNEL_LOAD_ADDRESS = ReadSector_HDD(&Disk_, (6684 + i), 1, __KERNEL_LOAD_ADDRESS);
+		printf("Read kernel sector \n");
+		__KERNEL_LOAD_ADDRESS = ReadSector_HDD(&Disk_, (16 + i), 1, __KERNEL_LOAD_ADDRESS);
 		if(__KERNEL_LOAD_ADDRESS == NULL) {
 			printf("[ERROR] Failed to read kernel from disk. Exit code: 0x0001");
 			return 0x0001;
